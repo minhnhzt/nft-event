@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:5.0
+    container_name: nft-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: nft_project_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - nft-network
+
+  # NFT Event Backend
+  backend:
+    build: .
+    container_name: nft-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://admin:password123@mongodb:27017/nft_project_db?authSource=admin
+      JWT_SECRET: your_super_secret_jwt_key_production
+      ALLOWED_ORIGINS: http://localhost:3000,https://yourdomain.com
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - nft-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  nft-network:
+    driver: bridge 

@@ -249,16 +249,11 @@ exports.getMintStats = async (req, res) => {
 exports.airdropSol = async (req, res) => {
   try {
     const { publicKey, amount = 1 } = req.body;
-    
+
     if (!publicKey) {
       return res.status(400).json({ message: 'Public key là bắt buộc' });
     }
-    
-    // Kiểm tra quyền admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Chỉ admin mới có quyền airdrop SOL' });
-    }
-    
+
     const result = await airdropSol(publicKey, amount);
     if (result.success) {
       res.json({ message: `Airdrop ${amount} SOL thành công`, signature: result.signature });
@@ -268,4 +263,4 @@ exports.airdropSol = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
-}; 
+};

@@ -117,6 +117,35 @@ docker-compose up -d
 # Xem logs
 docker-compose logs -f
 ```
+## 🧪 API Testing Guide
+
+You can test the API using Swagger UI or Postman.
+
+### Swagger UI
+
+- Open [http://localhost:5000/api-docs](http://localhost:5000/api-docs) in your browser.
+- For protected endpoints, click the green **Authorize** button at the top right.
+- Enter your JWT token in the format:  
+  ```
+  Bearer <your_token>
+  ```
+- You can obtain a token by registering or logging in via `/auth/register` or `/auth/login`.
+
+### Postman
+
+- Import your API endpoints or create requests manually.
+- For protected endpoints, add the following header:
+  ```
+  Authorization: Bearer <your_token>
+  ```
+- The API server runs on port **5000** by default:
+  ```
+  http://localhost:5000
+  ```
+
+---
+
+**Tip:** Always login or register first to get your JWT token before accessing protected routes.
 
 ## 🚀 Production Deployment
 

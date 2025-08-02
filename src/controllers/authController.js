@@ -62,7 +62,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: 'Missing email or password' });
+      return res.status(400).json({ message: 'Missing required fields' });
     }
     
     const user = await User.findOne({ email });
@@ -132,4 +132,4 @@ exports.updateProfile = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
-}; 
+};

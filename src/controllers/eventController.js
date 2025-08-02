@@ -1,4 +1,3 @@
-
 const Event = require('../models/Event');
 const NFTTemplate = require('../models/NFTTemplate');
 
@@ -11,11 +10,25 @@ const validateEventData = (data) => {
   if (!data.nftTemplate) {
     errors.push('NFT Template là bắt buộc');
   }
+  if (!data.description) {
+    errors.push('Mô tả sự kiện là bắt buộc');
+  }
   if (data.startDate && data.endDate && new Date(data.startDate) >= new Date(data.endDate)) {
     errors.push('Ngày kết thúc phải sau ngày bắt đầu');
   }
   return errors;
 };
+
+// Helper to safely parse criteria
+function parseCriteria(input) {
+  if (!input) return {};
+  if (typeof input === 'object') return input;
+  try {
+    return JSON.parse(input);
+  } catch {
+    return {};
+  }
+}
 
 // Tạo sự kiện mới
 exports.createEvent = async (req, res) => {
@@ -38,7 +51,7 @@ exports.createEvent = async (req, res) => {
       name,
       description,
       nftTemplate,
-      criteria: criteria ? JSON.parse(criteria) : {},
+      criteria: parseCriteria(criteria),
       startDate: startDate ? new Date(startDate) : null,
       endDate: endDate ? new Date(endDate) : null,
       createdBy: req.user._id,
@@ -138,10 +151,14 @@ exports.updateEvent = async (req, res) => {
       return res.status(403).json({ message: 'Không có quyền cập nhật' });
     }
     
+    if (!name && !description && !criteria && !startDate && !endDate) {
+      return res.status(400).json({ message: 'Phải có ít nhất một trường để cập nhật' });
+    }
+    
     const updateData = {};
     if (name) updateData.name = name;
     if (description !== undefined) updateData.description = description;
-    if (criteria) updateData.criteria = JSON.parse(criteria);
+    if (criteria !== undefined) updateData.criteria = parseCriteria(criteria);
     if (startDate) updateData.startDate = new Date(startDate);
     if (endDate) updateData.endDate = new Date(endDate);
     
@@ -189,6 +206,10 @@ exports.addParticipant = async (req, res) => {
     const { id } = req.params;
     const { user, solanaAddress, email } = req.body;
     
+    if (!user) {
+      return res.status(400).json({ message: 'User là bắt buộc' });
+    }
+    
     if (!solanaAddress && !email) {
       return res.status(400).json({ message: 'Solana address hoặc email là bắt buộc' });
     }
@@ -215,8 +236,10 @@ exports.addParticipant = async (req, res) => {
     
     event.participants.push({ user, solanaAddress, email });
     await event.save();
-    
-    res.json(event.participants);
+
+    // Fetch updated event
+    const updatedEvent = await Event.findById(id).populate('participants.user', 'username email solanaAddress');
+    res.json(updatedEvent.participants);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
@@ -249,4 +272,4 @@ exports.removeParticipant = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
-}; 
+};

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -40,6 +40,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // MongoDB connection
+console.log('MONGO_URI:', process.env.MONGO_URI); // Add this line before mongoose.connect
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -82,4 +83,4 @@ app.use('*', (req, res) => {
 // Global error handler (must be last)
 app.use(errorHandler);
 
-module.exports = app; 
+module.exports = app;

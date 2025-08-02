@@ -1,0 +1,11 @@
+{
+  "message": "User registered successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODhkMWFiZDQxMjA2N2EwNTM3OGU5OWMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NDA3Nzg4NiwiZXhwIjoxNzU0NjgyNjg2fQ.m6Q_yaZqSanSweGz6nGWTmU-mTUqAmZngR7DAtFOPRk",
+  "user": {
+    "id": "688d1abd412067a05378e99c",
+    "username": "d",
+    "email": "dienphandanh@gmail.com",
+    "solanaAddress": "HHWgtHVJWJ4uWxUBrydrGywaoGARm4G3QZhmqNEMmm9Jstring",
+    "role": "user"
+  }
+}

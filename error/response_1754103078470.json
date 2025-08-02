@@ -1,0 +1,4 @@
+{
+  "message": "Server error",
+  "error": "Event validation failed: participants.0.user: Cast to ObjectId failed for value \"d\" (type string) at path \"user\" because of \"BSONError\""
+}
